@@ -5,7 +5,7 @@ module.exports = {
     token: "",
     // Your ID
     // Your name/tag
-     owners: ["KOMU#0139"],
+    owners: ["KOMU#0139"],
     //The footer of the embeds that the bot will send
     footer: "KOMU ",
     // The id of the support
@@ -35,8 +35,8 @@ module.exports = {
         configuration: { enabled: true, name: "Configuration", desc: "Setup the bot with the configuration commands" },
         utilities: { enabled: true, name: "Utilities", desc: "Some usefull commands", aliases: ["general"] },
         music: { enabled: true, name: "Music", desc: "Listen music with KOMU" },
-        task: {enabled: true, name: "Task", desc: "KOMU task manager" },
-        poll: {enabled: true, name: "Poll", desc: "KOMU poll manager" },
+        komu: {enabled: true, name: "Task", desc: "KOMU task manager" },
+        slash: {enabled: true, name: "Poll", desc: "KOMU poll manager" },
         owner: { hide: true, enabled: true, name: "Owner", desc: "Manage your bot with the owner commands" }
     },
     // some usefull links about your bot, if you don't have an information, put null.
@@ -54,43 +54,5 @@ module.exports = {
         cached: true,
         delay: 300000 * 4,
         Options: { autoIndex: false }
-    },
-    // The default language of the bot
-    komubotrest: {
-        http_port: 3000,
-        http_ip: "0.0.0.0",
-        komu_bot_secret_key: "",
-        machleo_channel_id: "921339190090797106", 
-        thongbao_channel_id: "921239248991055885",
-        finance_channel_id: "922344796218093619",
-        thongbao_pm_channel_id: "923521414810710036",
-        CHECK_IN_URL: "http://172.16.100.153:8000",
-        admin_user_id: "840420960162152470",
-    },
-    wiki: {
-        api_url: "http://project-api.dev.nccsoft.vn/api/services/app/User/GetEmployeeInformation?email=",
-        api_key_secret: "",
-        options: [
-            'all',
-            'note',
-            'link',
-            'code',
-            'file',
-            'image',
-            'cmd',
-            'event',
-            'pm',
-            'hr',
-            'komu',
-            'policy',
-            'office',
-            'project',
-            'ot', 
-            'checkpoint',
-            'timesheet',
-            'tx8',
-            'fun',
-            "help",
-        ]
-    }
+    },    
 }
