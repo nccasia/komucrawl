@@ -69,7 +69,7 @@ const komuMessageSchema = new mongoose.Schema({}, { strict: false });
         //reference: this.reference,
         //interaction: this.interaction
     }).save();
-    await userData.findOneAndUpdate(
+    await userData.updateOne(
         { id: this.author.id },
         {
           last_message_id: this.id,
@@ -81,7 +81,7 @@ const komuMessageSchema = new mongoose.Schema({}, { strict: false });
         this.mentions
       ) {
         this.mentions.users.forEach(async (user) => {
-          await userData.findOneAndUpdate(
+          await userData.updateOne(
             { id: user.id },
             {
               last_mentioned_message_id: this.id,
