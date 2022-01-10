@@ -38,7 +38,7 @@ const bwl = async (message, client) => {
         });
         message.attachments.forEach(attachment => {
             try {
-                if (attachment.contentType.startsWith("image")) {
+                if (attachment.contentType != null && attachment.contentType.startsWith("image")) {
                     const imageLink = attachment.proxyURL;
                     console.log("downloading attachment " + imageLink);
                     const filename = uuidv4() + "_" + attachment.name;
