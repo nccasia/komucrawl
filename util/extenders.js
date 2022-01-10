@@ -69,6 +69,26 @@ const komuMessageSchema = new mongoose.Schema({}, { strict: false });
         //reference: this.reference,
         //interaction: this.interaction
     }).save();
+    await userData.findOneAndUpdate(
+        { id: this.author.id },
+        {
+          last_message_id: this.id,
+        }
+      );
+  
+      if (
+        (Array.isArray(this.mentions) && this.mentions.length !== 0) ||
+        this.mentions
+      ) {
+        this.mentions.users.forEach(async (user) => {
+          await userData.findOneAndUpdate(
+            { id: user.id },
+            {
+              last_mentioned_message_id: this.id,
+            }
+          );
+        });
+      }
     return data;
 };
 /**
@@ -88,27 +108,7 @@ Guild.prototype.addDB = async function(guildID = {}) {
         color: "#3A871F",
         backlist: null
     }).save()
-    await userData.findOneAndUpdate(
-      { id: this.author.id },
-      {
-        last_message_id: this.id,
-      }
-    );
-
-    if (
-      (Array.isArray(this.mentions) && this.mentions.length !== 0) ||
-      this.mentions
-    ) {
-      this.mentions.users.forEach(async (user) => {
-        console.log(user);
-        await userData.findOneAndUpdate(
-          { id: user.id },
-          {
-            last_mentioned_message_id: this.id,
-          }
-        );
-      });
-    }
+   
     return data
 };
 /**
