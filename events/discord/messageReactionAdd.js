@@ -1,16 +1,15 @@
 const bwlReactData = require('../../models/bwlReactData');
 
 module.exports = {
-  async execute(messageReaction, user, client) {
+  async execute(messageReaction, user) {
     try {
       const { message, emoji } = messageReaction;
-
       const chid = message.channel.id;
       const messageId = message.id;
       const guildId = message.guildId;
       const createdTimestamp = message.createdTimestamp;
 
-      let data = await bwlReactData
+      const data = await bwlReactData
         .findOne({
           authorId: user.id,
           messageId: messageId,

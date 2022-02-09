@@ -4,7 +4,6 @@ const fs = require('fs'),
     Client: Client,
     Intents: Intents,
     Collection: Collection,
-    MessageEmbed: MessageEmbed,
   } = require('discord.js'),
   client = new Client({
     intents: [
@@ -41,20 +40,20 @@ mongoose
     console.log('[MongoDB]: Error\n' + e);
   });
 
-const init = async function () {
-  const n = await readdir('./events/discord');
-  console.log(`[Events] ${n.length} events loaded.`);
-  n.forEach((e) => {
-    const n = e.split('.')[0],
-      t = require(`./events/discord/${e}`);
-    client.on(n, (...e) => t.execute(...e, client)),
-      delete require.cache[require.resolve(`./events/discord/${e}`)];
+const init = async () => {
+  const files = await readdir('./events/discord');
+  console.log(`[Events] ${files.length} events loaded.`);
+  files.forEach((file) => {
+    const name = file.split('.')[0];
+    const module = require(`./events/discord/${file}`);
+    client.on(name, (...event) => module.execute(...event, client));
+    delete require.cache[require.resolve(`./events/discord/${file}`)];
   });
 };
 
-init(),
-  client.login(client.config.token).catch((e) => {
-    console.log(
-      '[Discord login]: Please provide a valid discord bot token\n' + e
-    );
-  });
+init();
+client.login(client.config.token).catch((e) => {
+  console.log(
+    '[Discord login]: Please provide a valid discord bot token\n' + e
+  );
+});

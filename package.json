@@ -32,6 +32,8 @@
   "scripts": {
     "start": "node sharder.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --fix",
+    "format": "prettier --write .",
     "prepare": "husky install"
   },
   "repository": {

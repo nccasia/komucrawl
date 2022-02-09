@@ -9,4 +9,5 @@ const wikidb = new mongoose.Schema({
   createdate: { type: mongoose.Decimal128, required: false },
   note: { type: String, required: false },
 });
-const wikiData = (module.exports = mongoose.model('komu_wiki', wikidb));
+
+module.exports = mongoose.model('komu_wiki', wikidb);

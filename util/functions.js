@@ -1,11 +1,12 @@
+const hexColorRegex = require('hex-color-regex');
+
 /**
  * Returns a list of the commands in html. For a website, top.gg page etc
  * @param {object} client The discord client instance
  */
 const printCmd = async (message) => {
   let txt = '';
-  let a = message.client.commands.filter((c) => c.cat !== 'owner');
-  const descriptions = new Map();
+  const a = message.client.commands.filter((c) => c.cat !== 'owner');
   a.forEach(async (command) => {
     const desc = await message.gg(command.description);
     const infos = {
@@ -14,7 +15,6 @@ const printCmd = async (message) => {
       usage: command.usage ? command.usage : '',
       name: command.name,
     };
-    descriptions.set(command.name, infos);
 
     txt =
       txt +
@@ -64,9 +64,9 @@ const createClientVars = async (client) => {
     enabled: config.devMode,
     serverID: config.devServer,
   };
-  client.satinize = function (text, client) {
+  client.satinize = function (text) {
     if (text instanceof Object) {
-      for (var key in text) {
+      for (const key in text) {
         if (/^\$/.test(key)) {
           delete text[key];
         } else {
@@ -89,14 +89,25 @@ const resolveCategory = async function (args, client = {}) {
   }
   return found;
 };
+
+function hexColorCheck(a) {
+  const check = hexColorRegex().test(a);
+  let checkVerify = false;
+  if (check == true) {
+    checkVerify = true;
+  }
+  return checkVerify;
+}
+
 /**
  * Check the configuration
  * @param {object} config The config.json file
  */
 const checkConfig = async (config) => {
   if (!config) return console.error('✗ The provided config is not an object.');
-  if (config.logAll)
+  if (config.logAll) {
     console.log('Starting the verification of the configuration');
+  }
   let error;
   if (process.version.slice(1).split('.')[0] < 12) {
     console.error('✗ NodeJs 12 or higher is required.');
@@ -114,20 +125,9 @@ const checkConfig = async (config) => {
     console.error('✗ Please provide the embeds color.');
     error = true;
   } else {
-    var hexColorRegex = require('hex-color-regex');
-
-    function hexColorCheck(a) {
-      var check = hexColorRegex().test(a);
-      var checkVerify = false;
-      if (check == true) {
-        checkVerify = true;
-      }
-      return checkVerify;
-    }
-    let color = config.color;
-    var checkColor = hexColorCheck(color);
-    if (checkColor == true) {
-    } else {
+    const color = config.color;
+    const checkColor = hexColorCheck(color);
+    if (!checkColor) {
       console.error(
         '✗ Your color is invalid. You must chose one of these colors: https://htmlcolorcodes.com/'
       );
@@ -162,27 +162,26 @@ const checkConfig = async (config) => {
     console.error('✗ The logAll parameter is missing or is not a bolean value');
     error = true;
   }
-  if (!config.prefix || prefix.length > 4) {
+  if (!config.prefix || config.prefix.length > 4) {
     console.error('✗ Your prefix is missing or is too long. Max length is 4');
     error = true;
   }
   if (!config.database) {
     console.error('✗ Your config.js file looks broken. Please reinstall it');
     error = true;
-  } else {
-    if (!config.database.cached || typeof config.database.cached !== Boolean) {
-      console.error(
-        '✗ The database.cache parameter is missing or is not a bolean value'
-      );
-      error = true;
-    } else {
-      if (!config.database.delay || isNaN(config.database.delay)) {
-        console.error(
-          '✗ The database.delay parameter is missing or is not a number'
-        );
-        error = true;
-      }
-    }
+  } else if (
+    !config.database.cached ||
+    typeof config.database.cached !== Boolean
+  ) {
+    console.error(
+      '✗ The database.cache parameter is missing or is not a bolean value'
+    );
+    error = true;
+  } else if (!config.database.delay || isNaN(config.database.delay)) {
+    console.error(
+      '✗ The database.delay parameter is missing or is not a number'
+    );
+    error = true;
   }
   if (!config.token) {
     console.error(
@@ -219,13 +218,14 @@ const checkConfig = async (config) => {
       });
   }
   if (error) {
-    if (config.logAll)
+    if (config.logAll) {
       console.log(
         'Your config verification has failed. Please fix errors and try again\n\nIf you need more help, join our support server here: https://komu.vn/discord'
       );
+    }
     process.exit(0);
-  } else {
-    if (config.logAll) console.log('Your config is correct. Good game 🥳');
+  } else if (config.logAll) {
+    console.log('Your config is correct. Good game 🥳');
   }
   return error;
 };

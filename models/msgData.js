@@ -28,4 +28,5 @@ const msgdb = new mongoose.Schema({
   reference: { type: String, required: false },
   interaction: { type: String, required: false },
 });
-const msgData = (module.exports = mongoose.model('komu_msg', msgdb));
+
+module.exports = mongoose.model('komu_msg', msgdb);

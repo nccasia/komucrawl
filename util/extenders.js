@@ -4,8 +4,6 @@ const translate = require('@vitalets/google-translate-api');
 const guildData = require('../models/guildData');
 const userData = require('../models/userData');
 const msgData = require('../models/msgData');
-const mongoose = require('mongoose');
-const komuMessageSchema = new mongoose.Schema({}, { strict: false });
 /**
  * Add a guild in the database
  * @param {number} guildID The ID of the guild
@@ -15,7 +13,7 @@ User.prototype.addDB = async function (displayname = {}) {
 
   if (findUser) {
     findUser.id = this.id;
-    findUser.username = this.username,
+    findUser.username = this.username;
     findUser.discriminator = this.discriminator;
     findUser.avatar = this.avatar;
     findUser.bot = this.bot;
@@ -63,20 +61,10 @@ Message.prototype.addDB = async function () {
     pinned: this.pinned,
     tts: this.tts,
     nonce: this.nonce,
-    //embeds: this.embeds,
-    //components: this.components,
-    //attachments: this.attachments,
-    //stickers: this.stickers,
     editedTimestamp: this.editedTimestamp,
-    //reactions: this.reactions,
-    //mentions: this.mentions,
     webhookId: this.webhookId,
-    //groupActivityApplication: this.groupActivityApplication,
     applicationId: this.applicationId,
-    //activity: this.activity,
     flags: this.flags,
-    //reference: this.reference,
-    //interaction: this.interaction
   }).save();
   await userData.updateOne(
     { id: this.author.id },
@@ -108,7 +96,7 @@ Guild.prototype.addDB = async function (guildID = {}) {
   if (!guildID || isNaN(guildID)) {
     guildID = this.id;
   }
-  const data = await new guildData({
+  return new guildData({
     serverID: guildID,
     prefix: '*',
     lang: 'en',
@@ -117,8 +105,6 @@ Guild.prototype.addDB = async function (guildID = {}) {
     color: '#3A871F',
     backlist: null,
   }).save();
-
-  return data;
 };
 /**
  * Fetchs a guild in the database
@@ -137,7 +123,6 @@ Message.prototype.translate = function (text, guildDB = {}) {
     throw new Error(
       `Translate: Params error: Unknow text ID or missing text ${text}`
     );
-    return;
   }
   if (!guildDB) return console.log('Missing guildDB');
   return lang.translations[text][guildDB];
@@ -147,11 +132,9 @@ Guild.prototype.translate = async function (text = {}) {
   if (text) {
     if (!lang.translations[text]) {
       throw new Error(`Unknown text ID "${text}"`);
-      return;
     }
   } else {
-    throw new Error(`Not text Provided`);
-    return;
+    throw new Error('Not text Provided');
   }
   const langbd = await guildData.findOne({ serverID: this.id });
   let target;
@@ -166,31 +149,29 @@ Guild.prototype.translatee = async function (text, target = {}) {
   if (text) {
     if (!lang.translations[text]) {
       throw new Error(`Unknown text ID "${text}"`);
-      return;
     }
   } else {
-    throw new Error(`Aucun texte indiqué `);
-    return;
+    throw new Error('Aucun texte indiqué ');
   }
   return lang.translations[text][target];
 };
 
-Message.prototype.gg = async function (text, args, options = {}) {
+Message.prototype.gg = async function (text) {
   if (!text) {
     this.errorOccurred('No text provided', 'en');
-    throw new Error(`Aucun texte indiqué `);
+    throw new Error('Aucun texte indiqué ');
   }
-  let target = this.guild.lang;
+  const target = this.guild.lang;
   const texttoreturn = await translate(text, { to: target })
     .then((res) => res.text)
-    .catch((error) => text);
+    .catch(() => text);
   return texttoreturn
     .replace('show', 'channel')
     .replace('living room', 'channel')
     .replace('room', 'channel');
 };
 
-Message.prototype.errorMessage = function (text, cooldown = {}) {
+Message.prototype.errorMessage = function (text) {
   if (text) {
     return this.channel.send({
       embeds: [
@@ -208,10 +189,10 @@ Message.prototype.errorMessage = function (text, cooldown = {}) {
     });
   } else {
     this.errorOccurred('No text provided', 'en');
-    throw new Error(`Error: No text provided`);
+    throw new Error('Error: No text provided');
   }
 };
-Message.prototype.succesMessage = function (text, noAutor = {}) {
+Message.prototype.succesMessage = function (text) {
   if (text) {
     this.channel.send({
       embeds: [
@@ -221,10 +202,9 @@ Message.prototype.succesMessage = function (text, noAutor = {}) {
         },
       ],
     });
-    return;
   } else {
     this.errorOccurred('No text provided', 'en');
-    throw new Error(`Error: No text provided`);
+    throw new Error('Error: No text provided');
   }
 };
 Message.prototype.usage = async function (guildDB, cmd = {}) {
@@ -235,7 +215,7 @@ Message.prototype.usage = async function (guildDB, cmd = {}) {
     langUsage = await this.translate('USES_SING', guildDB.lang);
   }
   const read = await this.translate('READ', guildDB.lang);
-  let u = await this.translate('ARGS_REQUIRED', guildDB.lang);
+  const u = await this.translate('ARGS_REQUIRED', guildDB.lang);
   this.channel.send({
     embeds: [
       {
@@ -256,9 +236,9 @@ Message.prototype.usage = async function (guildDB, cmd = {}) {
     ],
   });
 };
-Message.prototype.mainMessage = function (text, args, options = {}) {
+Message.prototype.mainMessage = function (text) {
   if (text) {
-    let embed1 = new MessageEmbed()
+    const embed1 = new MessageEmbed()
       .setAuthor(this.author.tag, this.author.displayAvatarURL())
       .setDescription(`${text}`)
       .setColor('#3A871F')
@@ -278,13 +258,13 @@ Message.prototype.mainMessage = function (text, args, options = {}) {
           time: 11000,
           max: 1,
         });
-        collector.on('collect', async (r) => {
+        collector.on('collect', async () => {
           m.delete();
         });
-        collector.on('end', (collected) => m.reactions.removeAll());
+        collector.on('end', () => m.reactions.removeAll());
       });
   } else {
-    throw new Error(`Error: No text provided`);
+    throw new Error('Error: No text provided');
   }
 };
 /**
@@ -292,17 +272,11 @@ Message.prototype.mainMessage = function (text, args, options = {}) {
  * @param {string} error the code of the error
  */
 Message.prototype.errorOccurred = async function (err, guildDB = {}) {
-  console.log(
-    '[32m%s[0m',
-    'ERROR',
-    '[0m',
-    `${cmd ? `Command ${cmd.name}` : 'System'} has error: \n\n${err}`
-  );
-  const lang = await this.translate('ERROR', guildDB.lang);
+  const content = await this.translate('ERROR', guildDB.lang);
   const r = new MessageEmbed()
     .setColor('#F0B02F')
-    .setTitle(lang.title)
-    .setDescription(lang.desc)
+    .setTitle(content.title)
+    .setDescription(content.desc)
     .setFooter(
       'Error code: ' + err + '',
       this.client.user.displayAvatarURL({ dynamic: !0, size: 512 })

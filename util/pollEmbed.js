@@ -24,10 +24,12 @@ const pollEmbed = async (
   if (!msg && !msg.channel) return msg.reply('Channel is inaccessible.');
   if (!title) return msg.reply('Poll title is not given.');
   if (!options) return msg.reply('Poll options are not given.');
-  if (options.length < 2)
+  if (options.length < 2) {
     return msg.reply('Please provide more than one choice.');
-  if (options.length > emojiList.length)
+  }
+  if (options.length > emojiList.length) {
     return msg.reply(`Please provide ${emojiList.length} or less choices.`);
+  }
 
   let text = `*To vote, react using the correspoding emoji.\nThe voting will end in **${timeout} hours**.\nPoll creater can end the poll **forcefully** by reacting to ${forceEndPollEmoji} emoji.*\n\n`;
   const emojiInfo = {};
@@ -54,10 +56,12 @@ const pollEmbed = async (
       if (
         reaction.emoji.name === forceEndPollEmoji &&
         msg.author.id === user.id
-      )
+      ) {
         return reactionCollector.stop();
-      if (!voterInfo.has(user.id))
+      }
+      if (!voterInfo.has(user.id)) {
         voterInfo.set(user.id, { emoji: reaction.emoji.name });
+      }
       const votedEmoji = voterInfo.get(user.id).emoji;
       if (votedEmoji !== reaction.emoji.name) {
         const lastVote = poll.reactions.cache.get(votedEmoji);
@@ -83,8 +87,9 @@ const pollEmbed = async (
 
   reactionCollector.on('end', () => {
     text = "*Ding! Ding! Ding! Time's up!\n Results are in,*\n\n";
-    for (const emoji in emojiInfo)
+    for (const emoji in emojiInfo) {
       text += `\`${emojiInfo[emoji].option}\` - \`${emojiInfo[emoji].votes}\`\n\n`;
+    }
     poll.delete();
     msg.channel.send({
       embeds: [embedBuilder(title, msg.author.tag).setDescription(text)],

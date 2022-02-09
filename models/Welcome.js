@@ -10,4 +10,5 @@ const channeldb = new mongoose.Schema({
   reason: { type: String, required: true },
   color: { type: String, required: false },
 });
-const Welcome = (module.exports = mongoose.model('welcome', channeldb));
+
+module.exports = mongoose.model('welcome', channeldb);

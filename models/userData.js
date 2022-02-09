@@ -19,4 +19,5 @@ const userdb = new mongoose.Schema({
   last_message_id: { type: String, required: false },
   last_mentioned_message_id: { type: String, required: false },
 });
-const userData = (module.exports = mongoose.model('komu_user', userdb));
+
+module.exports = mongoose.model('komu_user', userdb);

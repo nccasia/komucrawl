@@ -9,7 +9,5 @@ const channeldb = new mongoose.Schema({
   lastMessageId: { type: String, required: false },
   rateLimitPerUser: { type: Number, required: false },
 });
-const channelData = (module.exports = mongoose.model(
-  'komu_channel',
-  channeldb
-));
+
+module.exports = mongoose.model('komu_channel', channeldb);

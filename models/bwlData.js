@@ -9,4 +9,4 @@ const bwldb = new mongoose.Schema({
   createdTimestamp: { type: mongoose.Decimal128, required: true },
 });
 
-const bwlData = (module.exports = mongoose.model('komu_bwl', bwldb));
+module.exports = mongoose.model('komu_bwl', bwldb);

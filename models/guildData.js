@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Prefix, Color, defaultLanguage, categories } = require('../config.js');
+const { Prefix, Color, defaultLanguage } = require('../config.js');
 const channeldb = new mongoose.Schema({
   serverID: { type: String, required: true },
   prefix: { type: String, required: true, default: Prefix },
@@ -92,7 +92,5 @@ const channeldb = new mongoose.Schema({
     },
   },
 });
-const guildData = (module.exports = mongoose.model(
-  'komu_guilddata',
-  channeldb
-));
+
+module.exports = mongoose.model('komu_guilddata', channeldb);

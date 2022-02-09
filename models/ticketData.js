@@ -9,4 +9,5 @@ const ticketdb = new mongoose.Schema({
   createdate: { type: mongoose.Decimal128, required: false },
   note: { type: String, required: false },
 });
-const ticketData = (module.exports = mongoose.model('komu_ticket', ticketdb));
+
+module.exports = mongoose.model('komu_ticket', ticketdb);

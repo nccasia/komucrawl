@@ -10,7 +10,4 @@ const bwlreactdb = new mongoose.Schema({
   createdTimestamp: { type: mongoose.Decimal128, required: true },
 });
 
-const bwlReactData = (module.exports = mongoose.model(
-  'komu_bwlreaction',
-  bwlreactdb
-));
+module.exports = mongoose.model('komu_bwlreaction', bwlreactdb);

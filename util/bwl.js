@@ -1,6 +1,5 @@
 const bwlData = require('../models/bwlData.js');
 const channelData = require('../models/channelData.js');
-const fs = require('fs');
 const downloader = require('image-downloader');
 const { v4: uuidv4 } = require('uuid');
 
@@ -24,7 +23,7 @@ const bwl = async (message, client) => {
 
     const authorId = message.author.id;
 
-    let links = [];
+    const links = [];
     message.embeds.forEach((embed) => {
       try {
         if (embed.type == 'image') {
@@ -55,7 +54,7 @@ const bwl = async (message, client) => {
     });
 
     if (links.length > 0) {
-      const data = await new bwlData({
+      await new bwlData({
         channelId: chid,
         messageId: messageId,
         guildId: guildId,

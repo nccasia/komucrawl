@@ -1,7 +1,7 @@
 const userData = require('../models/userData');
 const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
 
-getUserIdByUsername = async (client, req, res) => {
+const getUserIdByUsername = async (client, req, res) => {
   if (
     !req.get('X-Secret-Key') ||
     req.get('X-Secret-Key') !== client.config.komubotrest.komu_bot_secret_key
@@ -27,7 +27,7 @@ getUserIdByUsername = async (client, req, res) => {
   res.status(200).send({ username: req.body.username, userid: userdb.id });
 };
 
-sendMessageKomuToUser = async (client, msg, username) => {
+const sendMessageKomuToUser = async (client, msg, username) => {
   try {
     const userdb = await userData.findOne({
       $or: [{ email: username }, { username: username }],
@@ -61,7 +61,7 @@ sendMessageKomuToUser = async (client, msg, username) => {
   }
 };
 
-sendMessageToUser = async (client, req, res) => {
+const sendMessageToUser = async (client, req, res) => {
   if (
     !req.get('X-Secret-Key') ||
     req.get('X-Secret-Key') !== client.config.komubotrest.komu_bot_secret_key
@@ -96,7 +96,7 @@ sendMessageToUser = async (client, req, res) => {
 };
 
 // send image check in to user
-sendImageCheckInToUser = async (client, req, res) => {
+const sendImageCheckInToUser = async (client, req, res) => {
   // Validate request
   if (
     !req.get('X-Secret-Key') ||
@@ -154,7 +154,7 @@ sendImageCheckInToUser = async (client, req, res) => {
   }
 };
 
-sendImageLabelToUser = async (client, req, res) => {
+const sendImageLabelToUser = async (client, req, res) => {
   if (
     !req.get('X-Secret-Key') ||
     req.get('X-Secret-Key') !== client.config.komubotrest.komu_bot_secret_key
@@ -184,13 +184,13 @@ sendImageLabelToUser = async (client, req, res) => {
     let label1 = '';
     let label2 = '';
     if (req.body.questionType == 'VERIFY_EMOTION') {
-      messages = `Cảm xúc của người trong ảnh là gì?`;
-      label1 = `Good`;
-      label2 = `Bad`;
+      messages = 'Cảm xúc của người trong ảnh là gì?';
+      label1 = 'Good';
+      label2 = 'Bad';
     } else {
-      messages = `Đây có phải là bạn không?`;
-      label1 = `Yes`;
-      label2 = `No`;
+      messages = 'Đây có phải là bạn không?';
+      label1 = 'Yes';
+      label2 = 'No';
     }
 
     const row = new MessageActionRow().addComponents(
@@ -219,7 +219,7 @@ sendImageLabelToUser = async (client, req, res) => {
   }
 };
 
-sendMessageToChannel = async (client, req, res) => {
+const sendMessageToChannel = async (client, req, res) => {
   if (
     !req.get('X-Secret-Key') ||
     req.get('X-Secret-Key') !== client.config.komubotrest.komu_bot_secret_key
@@ -255,7 +255,7 @@ sendMessageToChannel = async (client, req, res) => {
   }
 };
 
-sendMessageToMachLeo = async (client, req, res) => {
+const sendMessageToMachLeo = async (client, req, res) => {
   req.body.channelid = client.config.komubotrest.machleo_channel_id;
   if (!req.body.username) {
     res.status(400).send({ message: 'username can not be empty!' });
@@ -269,7 +269,7 @@ sendMessageToMachLeo = async (client, req, res) => {
   const userdb = await userData.findOne({
     $or: [{ email: req.body.username }, { username: req.body.username }],
   });
-  var userid = '';
+  let userid = '';
   req.body.message = ` không trả lời tin nhắn WFH lúc ${req.body.createdate} !\n`;
 
   if (!userdb) {
@@ -284,17 +284,17 @@ sendMessageToMachLeo = async (client, req, res) => {
   await sendMessageToChannel(client, req, res);
 };
 
-sendMessageToThongBaoPM = async (client, req, res) => {
+const sendMessageToThongBaoPM = async (client, req, res) => {
   req.body.channelid = client.config.komubotrest.thongbao_pm_channel_id;
   await sendMessageToChannel(client, req, res);
 };
 
-sendMessageToThongBao = async (client, req, res) => {
+const sendMessageToThongBao = async (client, req, res) => {
   req.body.channelid = client.config.komubotrest.thongbao_channel_id;
   await sendMessageToChannel(client, req, res);
 };
 
-sendMessageToFinance = async (client, req, res) => {
+const sendMessageToFinance = async (client, req, res) => {
   req.body.channelid = client.config.komubotrest.finance_channel_id;
   await sendMessageToChannel(client, req, res);
 };
