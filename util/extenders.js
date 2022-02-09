@@ -4,6 +4,7 @@ const translate = require('@vitalets/google-translate-api');
 const guildData = require('../models/guildData');
 const userData = require('../models/userData');
 const msgData = require('../models/msgData');
+const mentionedData = require('../models/mentionedData');
 /**
  * Add a guild in the database
  * @param {number} guildID The ID of the guild
@@ -72,18 +73,38 @@ Message.prototype.addDB = async function () {
       last_message_id: this.id,
     }
   );
+  await mentionedData.updateMany(
+    { channelId: this.channelId, mentionUserId: this.author.id },
+    {
+      confirm: true,
+    }
+  );
 
   if (
     (Array.isArray(this.mentions) && this.mentions.length !== 0) ||
     this.mentions
   ) {
-    this.mentions.users.forEach(async (user) => {
-      await userData.updateOne(
-        { id: user.id },
-        {
-          last_mentioned_message_id: this.id,
-        }
-      );
+    const uniqueUsers = this.mentions.users.reduce((prev, current) => {
+      const exists = prev.find((user) => user.id === current.id);
+
+      if (!exists) {
+        prev.push(current);
+      }
+
+      return prev;
+    }, []);
+
+    uniqueUsers.forEach(async (user) => {
+      await new mentionedData({
+        messageId: this.id,
+        authorId: this.author.id,
+        channelId: this.channelId,
+        mentionUserId: user.id,
+        createdTimestamp: this.createdTimestamp,
+        confirm: false,
+      })
+        .save()
+        .catch(console.error);
     });
   }
   return data;
