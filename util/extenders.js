@@ -80,9 +80,29 @@ Message.prototype.addDB = async function () {
     }
   );
 
+  let channel = await this.client.channels.fetch(this.channelId);
+
+  while (channel.type !== 'GUILD_CATEGORY') {
+    channel = await this.client.channels.fetch(channel.parentId);
+  }
+
+  const checkCategories = [
+    'PROJECTS',
+    'PRODUCTS',
+    'LOREN',
+    'HRM&IT',
+    'SAODO',
+    'MANAGEMENT',
+  ];
+  const validCategory = checkCategories.includes(channel.name.toUpperCase());
+
   if (
-    (Array.isArray(this.mentions) && this.mentions.length !== 0) ||
-    this.mentions
+    this.mentions &&
+    this.mentions.users &&
+    this.mentions.users.size !== 0 &&
+    this.author.id !== '922003239887581205' &&
+    validCategory &&
+    this.channelId !== '921339190090797106'
   ) {
     const uniqueUsers = this.mentions.users.reduce((prev, current) => {
       const exists = prev.find((user) => user.id === current.id);
