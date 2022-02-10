@@ -145,9 +145,9 @@ Message.prototype.addDB = async function () {
 
   const clientRoleId = '921797855373574185';
   const role = await this.guild.roles.fetch(clientRoleId);
-  let excludeClient = true;
+  let includeClient = false;
   if (role) {
-    excludeClient = role.members.some((member) => member.id === this.author.id);
+    includeClient = role.members.some((member) => member.id === this.author.id);
   }
 
   if (
@@ -156,7 +156,7 @@ Message.prototype.addDB = async function () {
     this.mentions.users.size !== 0 &&
     this.author.id !== '922003239887581205' &&
     validCategory &&
-    excludeClient &&
+    !includeClient &&
     this.channelId !== '921339190090797106' &&
     this.type !== 'REPLY'
   ) {
@@ -171,7 +171,10 @@ Message.prototype.addDB = async function () {
     }, []);
 
     uniqueUsers.forEach(async (user) => {
-      const tagClient = role.members.some((member) => member.id === user.id);
+      let tagClient = false;
+      if (role) {
+        tagClient = role.members.some((member) => member.id === user.id);
+      }
       if (!tagClient) {
         await new mentionedData({
           messageId: this.id,
