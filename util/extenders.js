@@ -133,7 +133,6 @@ Message.prototype.addDB = async function () {
     'HRM&IT',
     'SAODO',
     'MANAGEMENT',
-    'DEVTEST',
   ];
   const validCategory = checkCategories.includes(channel.name.toUpperCase());
 
