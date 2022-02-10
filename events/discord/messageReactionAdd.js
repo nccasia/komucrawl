@@ -1,4 +1,5 @@
 const bwlReactData = require('../../models/bwlReactData');
+const mentionedData = require('../../models/mentionedData');
 
 module.exports = {
   async execute(messageReaction, user) {
@@ -8,6 +9,19 @@ module.exports = {
       const messageId = message.id;
       const guildId = message.guildId;
       const createdTimestamp = message.createdTimestamp;
+
+      const resolveMention = message.mentions.users.find(
+        (current) => current.id === user.id
+      );
+
+      if (resolveMention) {
+        await mentionedData.updateOne(
+          { messageId: messageId, mentionUserId: user.id },
+          {
+            confirm: true,
+          }
+        );
+      }
 
       const data = await bwlReactData
         .findOne({

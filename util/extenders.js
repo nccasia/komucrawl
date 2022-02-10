@@ -9,6 +9,46 @@ const mentionedData = require('../models/mentionedData');
  * Add a guild in the database
  * @param {number} guildID The ID of the guild
  */
+
+function setTime(date, hours, minute, second, msValue) {
+  return date.setHours(hours, minute, second, msValue);
+}
+
+function checkTime(time) {
+  if (!time) return false;
+  let result = false;
+  let date;
+
+  if (!time) {
+    date = new Date();
+  } else {
+    date = new Date(time);
+  }
+  const timezone = date.getTimezoneOffset() / -60;
+  const firstTimeMorning = new Date(
+    setTime(date, 1 + timezone, 30, 0, 0)
+  ).getTime();
+  const lastTimeMorning = new Date(
+    setTime(date, 4 + timezone, 59, 59, 59)
+  ).getTime();
+  const firstTimeAfternoon = new Date(
+    setTime(date, 6 + timezone, 0, 0, 0)
+  ).getTime();
+  const lastTimeAfternoon = new Date(
+    setTime(date, 7 + timezone, 29, 59, 59)
+  ).getTime();
+
+  if (
+    (time.getTime() >= firstTimeMorning && time.getTime() <= lastTimeMorning) ||
+    (time.getTime() >= firstTimeAfternoon &&
+      time.getTime() <= lastTimeAfternoon)
+  ) {
+    result = true;
+  }
+
+  return result;
+}
+
 User.prototype.addDB = async function (displayname = {}) {
   const findUser = await userData.findOne({ id: this.id });
 
@@ -93,8 +133,17 @@ Message.prototype.addDB = async function () {
     'HRM&IT',
     'SAODO',
     'MANAGEMENT',
+    'DEVTEST',
   ];
   const validCategory = checkCategories.includes(channel.name.toUpperCase());
+
+  if (checkTime(new Date())) return;
+
+  const roles = await this.guild.roles.fetch();
+  roles.map((role) => {
+    console.log('role', role.name);
+    role.members.map((member) => console.log('member', member.displayName));
+  });
 
   if (
     this.mentions &&
@@ -102,7 +151,8 @@ Message.prototype.addDB = async function () {
     this.mentions.users.size !== 0 &&
     this.author.id !== '922003239887581205' &&
     validCategory &&
-    this.channelId !== '921339190090797106'
+    this.channelId !== '921339190090797106' &&
+    this.type !== 'REPLY'
   ) {
     const uniqueUsers = this.mentions.users.reduce((prev, current) => {
       const exists = prev.find((user) => user.id === current.id);
@@ -122,6 +172,7 @@ Message.prototype.addDB = async function () {
         mentionUserId: user.id,
         createdTimestamp: this.createdTimestamp,
         confirm: false,
+        punish: false,
       })
         .save()
         .catch(console.error);
