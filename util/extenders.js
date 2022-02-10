@@ -84,6 +84,11 @@ User.prototype.addDB = async function (displayname = {}) {
 
   await komuUser.save();
 };
+
+Message.prototype.deleteDB = async function () {
+  await mentionedData.deleteMany({ messageId: this.id });
+};
+
 /**
  * Add a guild in the database
  * @param {number} guildID The ID of the guild
@@ -136,13 +141,14 @@ Message.prototype.addDB = async function () {
   ];
   const validCategory = checkCategories.includes(channel.name.toUpperCase());
 
-  if (checkTime(new Date())) return;
+  if (!checkTime(new Date())) return;
 
-  const roles = await this.guild.roles.fetch();
-  roles.map((role) => {
-    console.log('role', role.name);
-    role.members.map((member) => console.log('member', member.displayName));
-  });
+  const clientRoleId = '921797855373574185';
+  const role = await this.guild.roles.fetch(clientRoleId);
+  let excludeClient = true;
+  if (role) {
+    excludeClient = role.members.some((member) => member.id === this.author.id);
+  }
 
   if (
     this.mentions &&
@@ -150,6 +156,7 @@ Message.prototype.addDB = async function () {
     this.mentions.users.size !== 0 &&
     this.author.id !== '922003239887581205' &&
     validCategory &&
+    excludeClient &&
     this.channelId !== '921339190090797106' &&
     this.type !== 'REPLY'
   ) {
@@ -164,17 +171,20 @@ Message.prototype.addDB = async function () {
     }, []);
 
     uniqueUsers.forEach(async (user) => {
-      await new mentionedData({
-        messageId: this.id,
-        authorId: this.author.id,
-        channelId: this.channelId,
-        mentionUserId: user.id,
-        createdTimestamp: this.createdTimestamp,
-        confirm: false,
-        punish: false,
-      })
-        .save()
-        .catch(console.error);
+      const tagClient = role.members.some((member) => member.id === user.id);
+      if (!tagClient) {
+        await new mentionedData({
+          messageId: this.id,
+          authorId: this.author.id,
+          channelId: this.channelId,
+          mentionUserId: user.id,
+          createdTimestamp: this.createdTimestamp,
+          confirm: false,
+          punish: false,
+        })
+          .save()
+          .catch(console.error);
+      }
     });
   }
   return data;
