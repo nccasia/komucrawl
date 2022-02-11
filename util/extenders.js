@@ -175,13 +175,23 @@ Message.prototype.addDB = async function () {
       if (role) {
         tagClient = role.members.some((member) => member.id === user.id);
       }
-      if (!tagClient) {
+
+      const getChannels = await this.guild.channels.fetch(this.channelId);
+      let includeChannel = false;
+      if (getChannels) {
+        includeChannel = getChannels.members.some(
+          (member) => member.id === user.id
+        );
+      }
+
+      if (!tagClient && includeChannel) {
         await new mentionedData({
           messageId: this.id,
           authorId: this.author.id,
           channelId: this.channelId,
           mentionUserId: user.id,
           createdTimestamp: this.createdTimestamp,
+          noti: false,
           confirm: false,
           punish: false,
         })
