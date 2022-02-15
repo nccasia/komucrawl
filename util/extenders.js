@@ -133,6 +133,7 @@ Message.prototype.addDB = async function () {
 
   const checkCategories = [
     'PROJECTS',
+    'PROJECTS-EXT',
     'PRODUCTS',
     'LOREN',
     'HRM&IT',
