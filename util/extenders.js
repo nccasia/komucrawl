@@ -138,10 +138,11 @@ Message.prototype.addDB = async function () {
     'HRM&IT',
     'SAODO',
     'MANAGEMENT',
+    'DEVTEST',
   ];
   const validCategory = checkCategories.includes(channel.name.toUpperCase());
 
-  if (!checkTime(new Date())) return;
+  if (checkTime(new Date())) return;
 
   const clientRoleId = '921797855373574185';
   const role = await this.guild.roles.fetch(clientRoleId);
@@ -170,35 +171,38 @@ Message.prototype.addDB = async function () {
       return prev;
     }, []);
 
-    uniqueUsers.forEach(async (user) => {
-      let tagClient = false;
-      if (role) {
-        tagClient = role.members.some((member) => member.id === user.id);
-      }
+    uniqueUsers
+      .filter((user) => user.id !== '922003239887581205')
+      .forEach(async (user) => {
+        let tagClient = false;
+        if (role) {
+          tagClient = role.members.some((member) => member.id === user.id);
+        }
 
-      const getChannels = await this.guild.channels.fetch(this.channelId);
-      let includeChannel = false;
-      if (getChannels) {
-        includeChannel = getChannels.members.some(
-          (member) => member.id === user.id
-        );
-      }
+        const getChannels = await this.guild.channels.fetch(this.channelId);
+        let includeChannel = false;
+        if (getChannels) {
+          includeChannel = getChannels.members.some(
+            (member) => member.id === user.id
+          );
+        }
 
-      if (!tagClient && includeChannel) {
-        await new mentionedData({
-          messageId: this.id,
-          authorId: this.author.id,
-          channelId: this.channelId,
-          mentionUserId: user.id,
-          createdTimestamp: this.createdTimestamp,
-          noti: false,
-          confirm: false,
-          punish: false,
-        })
-          .save()
-          .catch(console.error);
-      }
-    });
+        if (!tagClient && includeChannel) {
+          await new mentionedData({
+            messageId: this.id,
+            authorId: this.author.id,
+            channelId: this.channelId,
+            mentionUserId: user.id,
+            createdTimestamp: this.createdTimestamp,
+            noti: false,
+            confirm: false,
+            punish: false,
+            reactionTimestamp: null,
+          })
+            .save()
+            .catch(console.error);
+        }
+      });
   }
   return data;
 };

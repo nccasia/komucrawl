@@ -16,9 +16,14 @@ module.exports = {
 
       if (resolveMention) {
         await mentionedData.updateOne(
-          { messageId: messageId, mentionUserId: user.id },
+          {
+            messageId: messageId,
+            mentionUserId: user.id,
+            reactionTimestamp: null,
+          },
           {
             confirm: true,
+            reactionTimestamp: Date.now(),
           }
         );
       }
