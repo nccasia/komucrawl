@@ -127,12 +127,15 @@ Message.prototype.addDB = async function () {
 
   let channel = await this.client.channels.fetch(this.channelId);
 
+  if (channel.type === 'DM') return data;
+
   while (channel.type !== 'GUILD_CATEGORY') {
     channel = await this.client.channels.fetch(channel.parentId);
   }
 
   const checkCategories = [
     'PROJECTS',
+    'PROJECTS-EXT',
     'PRODUCTS',
     'LOREN',
     'HRM&IT',

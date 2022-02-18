@@ -10,6 +10,8 @@ module.exports = {
       const guildId = message.guildId;
       const createdTimestamp = message.createdTimestamp;
 
+      if (!message.guildId) return;
+
       const resolveMention = message.mentions.users.find(
         (current) => current.id === user.id
       );
