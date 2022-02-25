@@ -35,7 +35,7 @@ function checkTime(time) {
     setTime(date, 6 + timezone, 0, 0, 0)
   ).getTime();
   const lastTimeAfternoon = new Date(
-    setTime(date, 7 + timezone, 29, 59, 59)
+    setTime(date, 10 + timezone, 29, 59, 59)
   ).getTime();
 
   if (
@@ -144,7 +144,7 @@ Message.prototype.addDB = async function () {
   ];
   const validCategory = checkCategories.includes(channel.name.toUpperCase());
 
-  if (checkTime(new Date())) return;
+  if (!checkTime(new Date())) return;
 
   const clientRoleId = '921797855373574185';
   const role = await this.guild.roles.fetch(clientRoleId);
