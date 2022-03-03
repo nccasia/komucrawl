@@ -183,7 +183,13 @@ Message.prototype.addDB = async function () {
 
         const getChannels = await this.guild.channels.fetch(this.channelId);
         let includeChannel = false;
-        if (getChannels) {
+        if (
+          getChannels &&
+          getChannels.members &&
+          (includeChannel = getChannels.members.some(
+            (member) => member.id === user.id
+          ))
+        ) {
           includeChannel = getChannels.members.some(
             (member) => member.id === user.id
           );
