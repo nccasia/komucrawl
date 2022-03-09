@@ -1,5 +1,6 @@
 const checkCameraData = require('../../models/checkCameraData');
 const joinCallData = require('../../models/joinCall');
+const voiceChannelData = require('../../models/voiceChannel');
 
 module.exports = {
   async execute(oldState, newState) {
@@ -38,6 +39,35 @@ module.exports = {
           }
         );
       };
+      if (countMember === 1 && newState.channelId) {
+        const checkJoinMeeting = await voiceChannelData.find({
+          status: 'start',
+          id: newState.channelId,
+        });
+        checkJoinMeeting.map(async (item) => {
+          await voiceChannelData.updateOne(
+            { id: item.id },
+            {
+              status: 'happening',
+            }
+          );
+        });
+      }
+      if (countMember < 1 && oldState.channelId) {
+        const checkEndMeeting = await voiceChannelData.find({
+          status: 'happening',
+          id: oldState.channelId,
+        });
+        checkEndMeeting.map(async (item) => {
+          await voiceChannelData.updateOne(
+            { id: item.id },
+            {
+              status: 'finished',
+            }
+          );
+          await oldState.channel.setName(`${item.originalName}`);
+        });
+      }
 
       // !newState.channelId => leave room
       // !oldState.channelId => join room
