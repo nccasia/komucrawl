@@ -39,7 +39,7 @@ module.exports = {
           }
         );
       };
-      if (countMember === 1 && newState.channelId) {
+      if (countMember === 2 && newState.channelId) {
         const checkJoinMeeting = await voiceChannelData.find({
           status: 'start',
           id: newState.channelId,
@@ -53,7 +53,7 @@ module.exports = {
           );
         });
       }
-      if (countMember < 1 && oldState.channelId) {
+      if (countMember < 2 && oldState.channelId) {
         const checkEndMeeting = await voiceChannelData.find({
           status: 'happening',
           id: oldState.channelId,
