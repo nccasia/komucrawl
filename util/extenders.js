@@ -33,14 +33,14 @@ function checkTime(date) {
   ).getTime();
 
   if (
-    (time.getTime() >= firstTimeMorning && time.getTime() <= lastTimeMorning) ||
-    (time.getTime() >= firstTimeAfternoon &&
-      time.getTime() <= lastTimeAfternoon)
+    (date.getTime() >= firstTimeMorning && date.getTime() <= lastTimeMorning) ||
+    (date.getTime() >= firstTimeAfternoon &&
+      date.getTime() <= lastTimeAfternoon)
   ) {
-    result = true;
+    return true;
   }
 
-  return result;
+  return false;
 }
 
 User.prototype.addDB = async function (displayname = {}) {
