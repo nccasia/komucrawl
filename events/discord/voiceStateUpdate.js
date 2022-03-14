@@ -45,7 +45,7 @@ module.exports = {
           id: newState.channelId,
         });
         checkJoinMeeting.map(async (item) => {
-          await voiceChannelData.updateOne(
+          await voiceChannelData.updateMany(
             { id: item.id },
             {
               status: 'happening',
@@ -53,13 +53,13 @@ module.exports = {
           );
         });
       }
-      if (countMember < 2 && oldState.channelId) {
+      if (countMember < 2 && !newState.channelId) {
         const checkEndMeeting = await voiceChannelData.find({
           status: 'happening',
           id: oldState.channelId,
         });
         checkEndMeeting.map(async (item) => {
-          await voiceChannelData.updateOne(
+          await voiceChannelData.updateMany(
             { id: item.id },
             {
               status: 'finished',
