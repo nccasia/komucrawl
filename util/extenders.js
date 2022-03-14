@@ -14,15 +14,9 @@ function setTime(date, hours, minute, second, msValue) {
   return date.setHours(hours, minute, second, msValue);
 }
 
-function checkTime(time) {
-  if (!time) return false;
-  let result = false;
-  let date;
-
-  if (!time) {
-    date = new Date();
-  } else {
-    date = new Date(time);
+function checkTime(date) {
+  if (date.getDay() === 6 || date.getDay() === 7) {
+    return false
   }
   const timezone = date.getTimezoneOffset() / -60;
   const firstTimeMorning = new Date(
