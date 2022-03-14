@@ -15,7 +15,7 @@ function setTime(date, hours, minute, second, msValue) {
 }
 
 function checkTime(date) {
-  if (date.getDay() === 6 || date.getDay() === 7) {
+  if (date.getDay() === 6 || date.getDay() === 0) {
     return false
   }
   const timezone = date.getTimezoneOffset() / -60;
