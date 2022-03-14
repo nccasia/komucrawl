@@ -122,6 +122,7 @@ Message.prototype.addDB = async function () {
     { channelId: this.channelId, mentionUserId: this.author.id },
     {
       confirm: true,
+      reactionTimestamp: Date.now()
     }
   );
 
