@@ -1,6 +1,23 @@
 const checkCameraData = require('../../models/checkCameraData');
-const joinCallData = require('../../models/joinCall');
+const joinCallData = require('../../models/joinCall')
 const voiceChannelData = require('../../models/voiceChannel');
+
+const addJoinCall = async (channelId, userid,status) => {
+  const newjoinCall = new joinCallData({
+    channelId,
+    userid ,
+    status ,
+  })
+  await newjoinCall.save()
+}
+
+const updateJoiningDb = async (channelId, userid, status) => {
+  await joinCallData.updateOne({channelId,userid,status : "joining"} , {
+    status ,
+    end_time : Date.now()
+  })
+}     
+
 
 module.exports = {
   async execute(oldState, newState) {
@@ -12,33 +29,7 @@ module.exports = {
         ? newState.channel?.members
         : oldState.channel.members;
 
-      const addJoinCall = async (channelId, userid, status) => {
-        const newjoinCall = new joinCallData({
-          channelId,
-          userid,
-          status,
-        });
-        await newjoinCall.save();
-      };
-      const checkDbIsJoinning = async (channelId, userid, status) => {
-        let result = false;
-        const joindb = await joinCallData.findOne({
-          channelId,
-          userid,
-          status,
-        });
-        if (joindb) result = true;
-        return result;
-      };
-      const updateJoiningDb = async (channelId, userid, status) => {
-        await joinCallData.updateOne(
-          { channelId, userid, status: 'joining' },
-          {
-            status,
-            end_time: Date.now(),
-          }
-        );
-      };
+      
       if (countMember === 2 && newState.channelId) {
         const checkJoinMeeting = await voiceChannelData.find({
           status: 'start',
@@ -69,6 +60,14 @@ module.exports = {
         });
       }
 
+      // update user joining => finish when join new meeting
+      await joinCallData.updateMany({ userid : newState.id, status : "joining"}, {
+        $set : {
+          status : "finish",
+          end_time : Date.now()
+        }
+      })
+      
       // !newState.channelId => leave room
       // !oldState.channelId => join room
       // one member leave when totals member = 2
