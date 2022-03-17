@@ -106,8 +106,9 @@ Message.prototype.addDB = async function () {
     applicationId: this.applicationId,
     flags: this.flags,
   }).save();
+ 
   await userData.updateOne(
-    { id: this.author.id },
+    { id: this.author.id , deactive: { $ne: true }},
     {
       last_message_id: this.id,
     }
