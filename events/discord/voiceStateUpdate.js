@@ -94,7 +94,7 @@ module.exports = {
           await updateJoiningDb(oldState.channelId, oldState.id, 'finish');
         }
       }
-      if (oldState.selfVideo === false && newState.selfVideo === true) {
+      if ((oldState.selfVideo === false && newState.selfVideo === true) || oldState.selfVideo === true) {
         await new checkCameraData({
           userId: newState.id,
           channelId: newState.channelId,
