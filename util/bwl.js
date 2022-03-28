@@ -74,6 +74,7 @@ const bwl = async (message, client) => {
       rawPosition: client.channels.cache.get(chid).rawPosition,
       lastMessageId: client.channels.cache.get(chid).lastMessageId,
       rateLimitPerUser: client.channels.cache.get(chid).rateLimitPerUser,
+      parentId: client.channels.cache.get(chid).parentId,
     });
     const datachk = await channelData
       .findOne({ id: chid })
