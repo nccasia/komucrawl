@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const msgdb = new mongoose.Schema({
+const msgDb = new mongoose.Schema({
   channelId: { type: String, required: false },
   guildId: { type: String, required: false },
   deleted: { type: Boolean, required: false },
@@ -29,4 +29,4 @@ const msgdb = new mongoose.Schema({
   interaction: { type: String, required: false },
 });
 
-module.exports = mongoose.model('komu_msg', msgdb);
+module.exports = mongoose.model('komu_msg', msgDb);
