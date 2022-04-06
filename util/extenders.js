@@ -14,39 +14,34 @@ function setTime(date, hours, minute, second, msValue) {
   return date.setHours(hours, minute, second, msValue);
 }
 
-function checkTime(time) {
-  if (!time) return false;
-  let result = false;
-  let date;
-
-  if (!time) {
-    date = new Date();
-  } else {
-    date = new Date(time);
+function checkTime(date) {
+  const currentDate = new Date();
+  if (date.getDay() === 6 || date.getDay() === 0) {
+    return false;
   }
   const timezone = date.getTimezoneOffset() / -60;
   const firstTimeMorning = new Date(
-    setTime(date, 1 + timezone, 30, 0, 0)
+    setTime(currentDate, 1 + timezone, 30, 0, 0)
   ).getTime();
   const lastTimeMorning = new Date(
-    setTime(date, 4 + timezone, 59, 59, 59)
+    setTime(currentDate, 4 + timezone, 59, 59, 59)
   ).getTime();
   const firstTimeAfternoon = new Date(
-    setTime(date, 6 + timezone, 0, 0, 0)
+    setTime(currentDate, 6 + timezone, 0, 0, 0)
   ).getTime();
   const lastTimeAfternoon = new Date(
-    setTime(date, 10 + timezone, 29, 59, 59)
+    setTime(currentDate, 10 + timezone, 29, 59, 59)
   ).getTime();
 
   if (
-    (time.getTime() >= firstTimeMorning && time.getTime() <= lastTimeMorning) ||
-    (time.getTime() >= firstTimeAfternoon &&
-      time.getTime() <= lastTimeAfternoon)
+    (date.getTime() >= firstTimeMorning && date.getTime() <= lastTimeMorning) ||
+    (date.getTime() >= firstTimeAfternoon &&
+      date.getTime() <= lastTimeAfternoon)
   ) {
-    result = true;
+    return true;
   }
 
-  return result;
+  return false;
 }
 
 User.prototype.addDB = async function (displayname = {}) {
@@ -112,8 +107,9 @@ Message.prototype.addDB = async function () {
     applicationId: this.applicationId,
     flags: this.flags,
   }).save();
+
   await userData.updateOne(
-    { id: this.author.id },
+    { id: this.author.id, deactive: { $ne: true } },
     {
       last_message_id: this.id,
     }
