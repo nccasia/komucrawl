@@ -17,7 +17,7 @@ function setTime(date, hours, minute, second, msValue) {
 function checkTime(date) {
   const currentDate = new Date();
   if (date.getDay() === 6 || date.getDay() === 0) {
-    return false
+    return false;
   }
   const timezone = date.getTimezoneOffset() / -60;
   const firstTimeMorning = new Date(
@@ -109,16 +109,21 @@ Message.prototype.addDB = async function () {
   }).save();
 
   await userData.updateOne(
-    { id: this.author.id , deactive: { $ne: true }},
+    { id: this.author.id, deactive: { $ne: true } },
     {
       last_message_id: this.id,
     }
   );
   await mentionedData.updateMany(
-    { channelId: this.channelId, mentionUserId: this.author.id },
+    {
+      channelId: this.channelId,
+      mentionUserId: this.author.id,
+      confirm: false,
+      reactionTimestamp: null,
+    },
     {
       confirm: true,
-      reactionTimestamp: Date.now()
+      reactionTimestamp: Date.now(),
     }
   );
 

@@ -4,7 +4,7 @@ const msgDb = new mongoose.Schema({
   channelId: { type: String, required: false },
   guildId: { type: String, required: false },
   deleted: { type: Boolean, required: false },
-  id: { type: String, required: false, unique : true },
+  id: { type: String, required: false, unique: true },
   createdTimestamp: { type: mongoose.Decimal128, required: false },
   type: { type: String, required: false },
   system: { type: Boolean, required: false },
