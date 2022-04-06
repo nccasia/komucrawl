@@ -119,9 +119,15 @@ Message.prototype.addDB = async function () {
     }
   );
   await mentionedData.updateMany(
-    { channelId: this.channelId, mentionUserId: this.author.id },
+    {
+      channelId: this.channelId,
+      mentionUserId: this.author.id,
+      confirm: false,
+      reactionTimestamp: null,
+    },
     {
       confirm: true,
+      reactionTimestamp: Date.now(),
     }
   );
 
