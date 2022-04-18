@@ -12,6 +12,33 @@ module.exports = {
 
       if (!message.guildId) return;
 
+      if (message.channel.type !== 'GUILD_CATEGORY') {
+        channel = await messageReaction.client.channels.fetch(
+          message.channel.parentId
+        );
+      }
+
+      const checkCategories = [
+        'PROJECTS',
+        'PROJECTS-EXT',
+        'PRODUCTS',
+        'LOREN',
+        'HRM&IT',
+        'SAODO',
+        'MANAGEMENT',
+      ];
+      const validCategory = checkCategories.includes(
+        channel.name.toUpperCase()
+      );
+
+      if (
+        validCategory &&
+        messageReaction.message.channelId !== '921339190090797106'
+      )
+        await message.channel.send(
+          `<@${user.id}> react ${messageReaction._emoji.name} on your comment ${message.url}`
+        );
+
       const resolveMention = message.mentions.users.find(
         (current) => current.id === user.id
       );
