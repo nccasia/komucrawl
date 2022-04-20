@@ -12,14 +12,12 @@ module.exports = {
 
       if (!message.guildId) return;
 
-      const fetchMessage = await messageReaction.client.channels.fetch(
+      const fetchMessage = await message.client.channels.fetch(
         message.channelId
       );
       const msg = await fetchMessage.messages.fetch(message.id);
       if (message.channel.type !== 'GUILD_CATEGORY') {
-        channel = await messageReaction.client.channels.fetch(
-          message.channel.parentId
-        );
+        channel = await message.client.channels.fetch(message.channel.parentId);
       }
 
       const checkCategories = [
@@ -35,15 +33,10 @@ module.exports = {
         channel.name.toUpperCase()
       );
 
-      if (
-        validCategory &&
-        messageReaction.message.channelId !== '921339190090797106'
-      ) {
-        const userDiscord = await messageReaction.client.users.fetch(
-          msg.author.id
-        );
+      if (validCategory && message.channelId !== '921339190090797106') {
+        const userDiscord = await message.client.users.fetch(msg.author.id);
         userDiscord.send(
-          `<@${user.id}> react ${messageReaction._emoji.name} on your comment ${message.url}`
+          `<@${user.id}> react ${emoji.name} on your comment ${message.url}`
         );
       }
 
