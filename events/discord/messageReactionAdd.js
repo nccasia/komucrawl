@@ -36,7 +36,7 @@ module.exports = {
       if (validCategory && message.channelId !== '921339190090797106') {
         const userDiscord = await message.client.users.fetch(msg.author.id);
         userDiscord.send(
-          `<@${user.id}> react ${emoji.name} on your comment ${message.url}`
+          `${user.username} react ${emoji.name} on your comment ${message.url}`
         );
       }
 
