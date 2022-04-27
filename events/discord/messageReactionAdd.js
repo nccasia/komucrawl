@@ -33,7 +33,11 @@ module.exports = {
         channel.name.toUpperCase()
       );
 
-      if (validCategory && message.channelId !== '921339190090797106') {
+      if (
+        validCategory &&
+        message.channelId !== '921339190090797106' &&
+        msg.author.id != '922003239887581205'
+      ) {
         const userDiscord = await message.client.users.fetch(msg.author.id);
         userDiscord.send(
           `${user.username} react ${emoji.name} on your comment ${message.url}`
