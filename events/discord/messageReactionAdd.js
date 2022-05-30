@@ -29,9 +29,13 @@ module.exports = {
         'SAODO',
         'MANAGEMENT',
       ];
-      const validCategory = checkCategories.includes(
-        channel.name.toUpperCase()
-      );
+
+      let validCategory;
+      if (channel.name.slice(0, 4).toUpperCase() === 'PRJ_') {
+        validCategory = true;
+      } else {
+        validCategory = checkCategories.includes(channel.name.toUpperCase());
+      }
 
       if (
         validCategory &&
