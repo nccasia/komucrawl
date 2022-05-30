@@ -146,7 +146,7 @@ Message.prototype.addDB = async function () {
   ];
 
   let validCategory;
-  if (channel.name.slice(0, 4).toUpperCase() === 'PRJ_') {
+  if (channel.name.slice(0, 4).toUpperCase() === 'PRJ-') {
     validCategory = true;
   } else {
     validCategory = checkCategories.includes(channel.name.toUpperCase());

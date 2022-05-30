@@ -9,6 +9,7 @@ module.exports = {
       const messageId = message.id;
       const guildId = message.guildId;
       const createdTimestamp = message.createdTimestamp;
+      let channel = message.channel;
 
       if (!message.guildId) return;
 
@@ -16,8 +17,8 @@ module.exports = {
         message.channelId
       );
       const msg = await fetchMessage.messages.fetch(message.id);
-      if (message.channel.type !== 'GUILD_CATEGORY') {
-        channel = await message.client.channels.fetch(message.channel.parentId);
+      while (channel.type !== 'GUILD_CATEGORY') {
+        channel = await this.client.channels.fetch(channel.parentId);
       }
 
       const checkCategories = [
@@ -31,7 +32,7 @@ module.exports = {
       ];
 
       let validCategory;
-      if (channel.name.slice(0, 4).toUpperCase() === 'PRJ_') {
+      if (channel.name.slice(0, 4).toUpperCase() === 'PRJ-') {
         validCategory = true;
       } else {
         validCategory = checkCategories.includes(channel.name.toUpperCase());
