@@ -18,7 +18,7 @@ module.exports = {
       );
       const msg = await fetchMessage.messages.fetch(message.id);
       while (channel.type !== 'GUILD_CATEGORY') {
-        channel = await this.client.channels.fetch(channel.parentId);
+        channel = await message.client.channels.fetch(channel.parentId);
       }
 
       const checkCategories = [
