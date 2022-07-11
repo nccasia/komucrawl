@@ -79,7 +79,21 @@ const bwl = async (message, client) => {
     const datachk = await channelData
       .findOne({ id: chid })
       .catch(console.error);
-    if (!datachk) data.save().catch(console.error);
+
+    if (datachk) {
+      await channelData.updateOne(
+        {
+          id: chid,
+        },
+        {
+          $set: {
+            lastMessageId: client.channels.cache.get(chid).lastMessageId,
+          },
+        }
+      );
+    } else {
+      data.save().catch(console.error);
+    }
   } catch (error) {
     console.error(error);
   }
