@@ -1,5 +1,4 @@
 const bwlReactData = require('../../models/bwlReactData');
-const mentionedData = require('../../models/mentionedData');
 
 module.exports = {
   async execute(messageReaction, user) {
@@ -9,63 +8,8 @@ module.exports = {
       const messageId = message.id;
       const guildId = message.guildId;
       const createdTimestamp = message.createdTimestamp;
-      let channel = message.channel;
 
       if (!message.guildId) return;
-
-      const fetchMessage = await message.client.channels.fetch(
-        message.channelId
-      );
-      const msg = await fetchMessage.messages.fetch(message.id);
-      while (channel.type !== 'GUILD_CATEGORY') {
-        channel = await message.client.channels.fetch(channel.parentId);
-      }
-
-      const checkCategories = [
-        'PROJECTS',
-        'PROJECTS-EXT',
-        'PRODUCTS',
-        'LOREN',
-        'HRM&IT',
-        'SAODO',
-        'MANAGEMENT',
-      ];
-
-      let validCategory;
-      if (channel.name.slice(0, 4).toUpperCase() === 'PRJ-') {
-        validCategory = true;
-      } else {
-        validCategory = checkCategories.includes(channel.name.toUpperCase());
-      }
-
-      if (
-        validCategory &&
-        message.channelId !== '921339190090797106' &&
-        msg.author.id != '922003239887581205'
-      ) {
-        const userDiscord = await message.client.users.fetch(msg.author.id);
-        userDiscord.send(
-          `${user.username} react ${emoji.name} on your comment ${message.url}`
-        );
-      }
-
-      const resolveMention = message.mentions.users.find(
-        (current) => current.id === user.id
-      );
-
-      if (resolveMention) {
-        await mentionedData.updateOne(
-          {
-            messageId: messageId,
-            mentionUserId: user.id,
-            reactionTimestamp: null,
-          },
-          {
-            confirm: true,
-            reactionTimestamp: Date.now(),
-          }
-        );
-      }
 
       const data = await bwlReactData
         .findOne({
